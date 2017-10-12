@@ -1,0 +1,40 @@
+.drop-pane {
+    -fx-border-width: 3px;
+    -fx-border-color: lightgray;
+    -fx-border-style: dashed;
+}
+
+.drop-pane.active {
+    -fx-border-color: black;
+}
+
+.drop-pane-text {
+    -fx-text-fill: lightgrey;
+}
+
+.drop-pane-text.active {
+    -fx-text-fill: black;
+}
+
+.generate-complete {
+    -fx-border-color: #347e57;
+    -fx-border-style: solid;
+}
+
+.generate-complete * {
+    -fx-text-fill: #347e57;
+}
+
+.generate-error {
+    -fx-border-color: red;
+    -fx-border-style: solid;
+}
+
+.generate-error * {
+    -fx-text-fill: red;
+}
+
+.reset-button {
+    -fx-text-fill: black;
+    -fx-background-radius: 0;
+}
