@@ -9,6 +9,8 @@ public interface Constants {
 
     String MESSAGE_DROP = "Перетащи сюда xml и xsd";
     String MESSAGE_RELEASE = "А теперь отпусти";
+    String MESSAGE_XSD_NOT_FOUND = "XSD схема не найдена";
+    String MESSAGE_XML_NOT_FOUND = "XML документ не найден";
     String MESSAGE_REPORT_GENERATE = "Генерация отчета";
     String MESSAGE_COMPLETE = "Отчет готов";
     String MESSAGE_XML_INVALID = "XML документ не прошел проверку";

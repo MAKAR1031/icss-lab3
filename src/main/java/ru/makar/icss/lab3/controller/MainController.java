@@ -96,6 +96,16 @@ public class MainController implements Initializable {
             if (files != null) {
                 File xsd = getXSDSchema(files);
                 File xml = getXMLDocument(files);
+                if (xsd == null || !xsd.exists()) {
+                    dropPane.getStyleClass().add("generate-error");
+                    dropPaneLabel.setText(Constants.MESSAGE_XSD_NOT_FOUND);
+                    return;
+                }
+                if (xml == null || !xml.exists()) {
+                    dropPane.getStyleClass().add("generate-error");
+                    dropPaneLabel.setText(Constants.MESSAGE_XML_NOT_FOUND);
+                    return;
+                }
                 if (generateReport(xsd, xml)) {
                     dropPane.getStyleClass().add("generate-complete");
                     dropPaneLabel.setText(Constants.MESSAGE_COMPLETE);
