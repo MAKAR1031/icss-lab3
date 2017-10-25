@@ -1,7 +1,6 @@
-package ru.makar.icss.lab3.parser.impl;
+package ru.makar.icss.lab3.parser.impl.stax;
 
 import ru.makar.icss.lab3.model.GroupsInfo;
-import ru.makar.icss.lab3.parser.DataExtractor;
 import ru.makar.icss.lab3.parser.XmlParser;
 
 import javax.xml.stream.XMLInputFactory;
@@ -13,17 +12,15 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 
-public class XmlParserImpl implements XmlParser {
+public final class StAXParser implements XmlParser {
+    private StAXDataExtractor dataExtractor;
 
-    private final File xml;
-    private DataExtractor dataExtractor;
-
-    public static XmlParser parse(File xml) {
-        return new XmlParserImpl(xml);
+    public StAXParser() {
+        dataExtractor = new StAXDataExtractor();
     }
 
     @Override
-    public GroupsInfo extractData() {
+    public GroupsInfo parse(File xml) {
         try (BufferedInputStream stream = new BufferedInputStream(new FileInputStream(xml))) {
             XMLInputFactory factory = XMLInputFactory.newInstance();
             XMLStreamReader reader = factory.createXMLStreamReader(stream);
@@ -41,10 +38,5 @@ public class XmlParserImpl implements XmlParser {
             e.printStackTrace();
         }
         return null;
-    }
-
-    private XmlParserImpl(File file) {
-        this.xml = file;
-        dataExtractor = new DataExtractorImpl();
     }
 }

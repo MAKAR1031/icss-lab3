@@ -1,9 +1,8 @@
-package ru.makar.icss.lab3.parser.impl;
+package ru.makar.icss.lab3.parser.impl.stax;
 
 import ru.makar.icss.lab3.model.Group;
 import ru.makar.icss.lab3.model.GroupsInfo;
 import ru.makar.icss.lab3.model.Student;
-import ru.makar.icss.lab3.parser.DataExtractor;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -15,10 +14,9 @@ import java.util.List;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
-public class DataExtractorImpl implements DataExtractor {
+final class StAXDataExtractor {
 
-    @Override
-    public GroupsInfo extractInfo(XMLStreamReader reader) throws XMLStreamException {
+    GroupsInfo extractInfo(XMLStreamReader reader) throws XMLStreamException {
         GroupsInfo info = new GroupsInfo();
         int event = reader.getEventType();
         while (true) {
