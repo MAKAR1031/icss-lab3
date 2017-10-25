@@ -16,6 +16,7 @@ import javafx.stage.DirectoryChooser;
 import ru.makar.icss.lab3.Constants;
 import ru.makar.icss.lab3.model.GroupsInfo;
 import ru.makar.icss.lab3.parser.XmlParser;
+import ru.makar.icss.lab3.parser.impl.DataProcessor;
 import ru.makar.icss.lab3.parser.impl.XmlValidator;
 import ru.makar.icss.lab3.parser.impl.stax.StAXParser;
 import ru.makar.icss.lab3.report.ReportGenerator;
@@ -46,6 +47,7 @@ public class MainController implements Initializable {
     private DirectoryChooser directoryChooser;
     private XmlValidator xmlValidator;
     private XmlParser xmlParser;
+    private DataProcessor dataProcessor;
     private ReportGenerator reportGenerator;
     private BooleanProperty stateClear;
 
@@ -55,6 +57,7 @@ public class MainController implements Initializable {
         directoryChooser.setTitle("Сохранить отчет");
         xmlValidator = new XmlValidator();
         xmlParser = new StAXParser();
+        dataProcessor = new DataProcessor();
         reportGenerator = new ReportGenerator();
         dropPaneLabel.setText(MESSAGE_DROP);
         stateClear = new SimpleBooleanProperty();
@@ -142,7 +145,9 @@ public class MainController implements Initializable {
             return false;
         }
         GroupsInfo info = xmlParser.parse(xml);
-        if (info == null) {
+        if (info != null) {
+            dataProcessor.process(info);
+        } else {
             dropPaneLabel.setText(MESSAGE_ERROR);
             return false;
         }

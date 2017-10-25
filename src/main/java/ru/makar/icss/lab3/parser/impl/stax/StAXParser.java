@@ -10,7 +10,6 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.math.BigDecimal;
 
 public final class StAXParser implements XmlParser {
     private StAXDataExtractor dataExtractor;
@@ -26,13 +25,6 @@ public final class StAXParser implements XmlParser {
             XMLStreamReader reader = factory.createXMLStreamReader(stream);
             GroupsInfo info = dataExtractor.extractInfo(reader);
             reader.close();
-            info.getGroups().forEach(g -> {
-                BigDecimal baseCost = g.getBaseCost();
-                long studentsCount = info.getStudents().stream()
-                        .filter(s -> s.getGroupRef() == g.getId() && s.isOnBudget())
-                        .count();
-                g.setEducationCost(baseCost.multiply(BigDecimal.valueOf(studentsCount < 2 ? 2 : studentsCount)));
-            });
             return info;
         } catch (IOException | XMLStreamException e) {
             e.printStackTrace();
