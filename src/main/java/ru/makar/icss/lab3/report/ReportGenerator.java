@@ -62,8 +62,8 @@ public class ReportGenerator {
 
     private String generateReportContent() {
         JtwigModel model = JtwigModel.newModel()
-                                     .with("groups", groupsInfo.getGroups())
-                                     .with("students", groupsInfo.getStudents());
+                .with("groups", groupsInfo.getGroups())
+                .with("students", groupsInfo.getStudents());
         return template.render(model);
     }
 }

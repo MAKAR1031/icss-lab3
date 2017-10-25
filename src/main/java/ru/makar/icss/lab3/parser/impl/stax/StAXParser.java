@@ -29,8 +29,8 @@ public final class StAXParser implements XmlParser {
             info.getGroups().forEach(g -> {
                 BigDecimal baseCost = g.getBaseCost();
                 long studentsCount = info.getStudents().stream()
-                                         .filter(s -> s.getGroupRef() == g.getId() && s.isOnBudget())
-                                         .count();
+                        .filter(s -> s.getGroupRef() == g.getId() && s.isOnBudget())
+                        .count();
                 g.setEducationCost(baseCost.multiply(BigDecimal.valueOf(studentsCount < 2 ? 2 : studentsCount)));
             });
             return info;
