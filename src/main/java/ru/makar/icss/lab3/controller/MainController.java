@@ -15,9 +15,8 @@ import javafx.scene.layout.Pane;
 import javafx.stage.DirectoryChooser;
 import ru.makar.icss.lab3.Constants;
 import ru.makar.icss.lab3.model.GroupsInfo;
-import ru.makar.icss.lab3.parser.XmlValidator;
 import ru.makar.icss.lab3.parser.impl.XmlParserImpl;
-import ru.makar.icss.lab3.parser.impl.XmlValidatorImpl;
+import ru.makar.icss.lab3.parser.impl.XmlValidator;
 import ru.makar.icss.lab3.report.ReportGenerator;
 
 import java.awt.*;
@@ -52,7 +51,7 @@ public class MainController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         directoryChooser = new DirectoryChooser();
         directoryChooser.setTitle("Сохранить отчет");
-        xmlValidator = new XmlValidatorImpl();
+        xmlValidator = new XmlValidator();
         reportGenerator = new ReportGenerator();
         dropPaneLabel.setText(MESSAGE_DROP);
         stateClear = new SimpleBooleanProperty();

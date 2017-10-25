@@ -1,7 +1,6 @@
 package ru.makar.icss.lab3.parser.impl;
 
 import org.xml.sax.SAXException;
-import ru.makar.icss.lab3.parser.XmlValidator;
 
 import javax.xml.XMLConstants;
 import javax.xml.stream.XMLInputFactory;
@@ -16,8 +15,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-public class XmlValidatorImpl implements XmlValidator {
-    @Override
+public class XmlValidator {
     public boolean validate(File xsd, File xml) {
         try (BufferedInputStream stream = new BufferedInputStream(new FileInputStream(xml))) {
             XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(stream);
