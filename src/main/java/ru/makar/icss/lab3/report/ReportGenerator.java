@@ -4,9 +4,7 @@ import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
 import org.jtwig.environment.EnvironmentConfiguration;
 import org.jtwig.environment.EnvironmentConfigurationBuilder;
-import ru.makar.icss.lab3.model.Group;
-import ru.makar.icss.lab3.model.Student;
-
+import ru.makar.icss.lab3.model.GroupsInfo;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -14,14 +12,12 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.List;
 
 import static ru.makar.icss.lab3.Constants.PATH_REPORT_TEMPLATE;
 
 public class ReportGenerator {
     private String targetName;
-    private List<Group> groups;
-    private List<Student> students;
+    private GroupsInfo groupsInfo;
     private JtwigTemplate template;
 
     public ReportGenerator() {
@@ -38,12 +34,8 @@ public class ReportGenerator {
         this.targetName = targetName;
     }
 
-    public void setGroups(List<Group> groups) {
-        this.groups = groups;
-    }
-
-    public void setStudents(List<Student> students) {
-        this.students = students;
+    public void setGroupsInfo(GroupsInfo groupsInfo) {
+        this.groupsInfo = groupsInfo;
     }
 
     public File generate(File destinationPath) {
@@ -70,8 +62,8 @@ public class ReportGenerator {
 
     private String generateReportContent() {
         JtwigModel model = JtwigModel.newModel()
-                                     .with("groups", groups)
-                                     .with("students", students);
+                                     .with("groups", groupsInfo.getGroups())
+                                     .with("students", groupsInfo.getStudents());
         return template.render(model);
     }
 }

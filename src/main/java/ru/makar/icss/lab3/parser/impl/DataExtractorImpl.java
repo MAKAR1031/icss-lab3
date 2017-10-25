@@ -1,6 +1,7 @@
 package ru.makar.icss.lab3.parser.impl;
 
 import ru.makar.icss.lab3.model.Group;
+import ru.makar.icss.lab3.model.GroupsInfo;
 import ru.makar.icss.lab3.model.Student;
 import ru.makar.icss.lab3.parser.DataExtractor;
 
@@ -8,6 +9,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
@@ -16,13 +18,32 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 public class DataExtractorImpl implements DataExtractor {
 
     @Override
-    public void extractGroups(XMLStreamReader reader, List<Group> groups) throws XMLStreamException {
+    public GroupsInfo extractInfo(XMLStreamReader reader) throws XMLStreamException {
+        GroupsInfo info = new GroupsInfo();
+        int event = reader.getEventType();
+        while (true) {
+            if (event == START_ELEMENT && "groups".equals(reader.getLocalName())) {
+                info.getGroups().addAll(extractGroups(reader));
+                event = reader.getEventType();
+            }
+            if (event == START_ELEMENT && "students".equals(reader.getLocalName())) {
+                info.getStudents().addAll(extractStudents(reader));
+            }
+
+            if (!reader.hasNext()) {
+                break;
+            }
+            event = reader.next();
+        }
+        return info;
+    }
+
+    private List<Group> extractGroups(XMLStreamReader reader) throws XMLStreamException {
+        List<Group> groups = new ArrayList<>();
         int event = reader.getEventType();
         while (true) {
             if (event == START_ELEMENT && "group".equals(reader.getLocalName())) {
-                Group group = new Group();
-                extractGroup(reader, group);
-                groups.add(group);
+                groups.add(extractGroup(reader));
                 event = reader.getEventType();
             }
             if (event == END_ELEMENT && "groups".equals(reader.getLocalName())) {
@@ -34,16 +55,15 @@ public class DataExtractorImpl implements DataExtractor {
             }
             event = reader.next();
         }
+        return groups;
     }
 
-    @Override
-    public void extractStudents(XMLStreamReader reader, List<Student> students) throws XMLStreamException {
+    private List<Student> extractStudents(XMLStreamReader reader) throws XMLStreamException {
+        List<Student> students = new ArrayList<>();
         int event = reader.getEventType();
         while (true) {
             if (event == START_ELEMENT && "student".equals(reader.getLocalName())) {
-                Student student = new Student();
-                extractStudent(reader, student);
-                students.add(student);
+                students.add(extractStudent(reader));
                 event = reader.getEventType();
             }
             if (event == END_ELEMENT && "students".equals(reader.getLocalName())) {
@@ -54,9 +74,11 @@ public class DataExtractorImpl implements DataExtractor {
             }
             event = reader.next();
         }
+        return students;
     }
 
-    private void extractGroup(XMLStreamReader reader, Group group) throws XMLStreamException {
+    private Group extractGroup(XMLStreamReader reader) throws XMLStreamException {
+        Group group = new Group();
         int event = reader.getEventType();
         while (true) {
             if (event == START_ELEMENT) {
@@ -82,9 +104,11 @@ public class DataExtractorImpl implements DataExtractor {
             }
             event = reader.next();
         }
+        return group;
     }
 
-    private void extractStudent(XMLStreamReader reader, Student student) throws XMLStreamException {
+    private Student extractStudent(XMLStreamReader reader) throws XMLStreamException {
+        Student student = new Student();
         int event = reader.getEventType();
         while (true) {
             if (event == START_ELEMENT) {
@@ -119,5 +143,6 @@ public class DataExtractorImpl implements DataExtractor {
             }
             event = reader.next();
         }
+        return student;
     }
 }

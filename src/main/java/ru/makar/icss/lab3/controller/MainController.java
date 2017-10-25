@@ -14,8 +14,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.DirectoryChooser;
 import ru.makar.icss.lab3.Constants;
-import ru.makar.icss.lab3.model.Group;
-import ru.makar.icss.lab3.model.Student;
+import ru.makar.icss.lab3.model.GroupsInfo;
 import ru.makar.icss.lab3.parser.XmlValidator;
 import ru.makar.icss.lab3.parser.impl.XmlParserImpl;
 import ru.makar.icss.lab3.parser.impl.XmlValidatorImpl;
@@ -25,7 +24,6 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -136,22 +134,19 @@ public class MainController implements Initializable {
     }
 
     private boolean generateReport(File xsd, File xml) {
-        List<Group> groups = new ArrayList<>();
-        List<Student> students = new ArrayList<>();
         boolean xmlValid = xmlValidator.validate(xsd, xml);
         if (!xmlValid) {
             dropPaneLabel.setText(MESSAGE_XML_INVALID);
             return false;
         }
-        boolean dataExtracted = XmlParserImpl.parse(xml).extractData(groups, students);
-        if (!dataExtracted) {
+        GroupsInfo info = XmlParserImpl.parse(xml).extractData();
+        if (info == null) {
             dropPaneLabel.setText(MESSAGE_ERROR);
             return false;
         }
         String targetName = xml.getName().replaceAll("\\.xml", "") + "-report.html";
         reportGenerator.setTargetName(targetName);
-        reportGenerator.setGroups(groups);
-        reportGenerator.setStudents(students);
+        reportGenerator.setGroupsInfo(info);
         File destination = directoryChooser.showDialog(rootPane.getScene().getWindow());
         File report = reportGenerator.generate(destination);
         if (report != null) {
