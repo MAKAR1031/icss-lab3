@@ -16,17 +16,19 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 public class XmlValidator {
-    public boolean validate(File xsd, File xml) {
+    public String validate(File xsd, File xml) {
         try (BufferedInputStream stream = new BufferedInputStream(new FileInputStream(xml))) {
             XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(stream);
             SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
             Schema schema = schemaFactory.newSchema(xsd);
             Validator validator = schema.newValidator();
             validator.validate(new StAXSource(reader));
-            return true;
-        } catch (SAXException | IOException | XMLStreamException e) {
-            e.printStackTrace();
+            return "ok";
+        } catch (SAXException saxException) {
+            String message = saxException.getMessage();
+            return message.substring(message.indexOf(';') + 1).trim();
+        } catch (XMLStreamException | IOException e) {
+            return "error";
         }
-        return false;
     }
 }

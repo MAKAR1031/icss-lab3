@@ -126,7 +126,7 @@ public class MainController implements Initializable {
                     dropPaneLabel.setText(Constants.MESSAGE_XML_NOT_FOUND);
                     return;
                 }
-                if (generateReport(xsd, xml)) {
+                if (parseAndGenerateReport(xsd, xml)) {
                     dropPane.getStyleClass().add("generate-complete");
                     dropPaneLabel.setText(Constants.MESSAGE_COMPLETE);
                 } else {
@@ -161,10 +161,10 @@ public class MainController implements Initializable {
         return files.stream().filter(f -> f.getName().endsWith(".xml")).findAny().orElse(null);
     }
 
-    private boolean generateReport(File xsd, File xml) {
-        boolean xmlValid = xmlValidator.validate(xsd, xml);
-        if (!xmlValid) {
-            dropPaneLabel.setText(MESSAGE_XML_INVALID);
+    private boolean parseAndGenerateReport(File xsd, File xml) {
+        String validState = xmlValidator.validate(xsd, xml);
+        if (!"ok".equals(validState)) {
+            dropPaneLabel.setText(MESSAGE_XML_INVALID + validState);
             return false;
         }
         GroupsInfo info = xmlParser.parse(xml);
