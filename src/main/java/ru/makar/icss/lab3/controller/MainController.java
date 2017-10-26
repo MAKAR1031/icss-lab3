@@ -83,11 +83,12 @@ public class MainController implements Initializable {
 
     @FXML
     private void onDragOver(DragEvent event) {
+        if (!stateProperty.get()) {
+            return;
+        }
         dropPane.getStyleClass().add("active");
         dropPaneLabel.getStyleClass().add("active");
-        if (stateProperty.get()) {
-            dropPaneLabel.setText(MESSAGE_RELEASE);
-        }
+        dropPaneLabel.setText(MESSAGE_RELEASE);
         event.acceptTransferModes(TransferMode.MOVE);
     }
 
