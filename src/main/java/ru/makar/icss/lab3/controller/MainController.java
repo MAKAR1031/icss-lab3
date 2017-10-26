@@ -7,6 +7,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
@@ -18,6 +20,8 @@ import ru.makar.icss.lab3.model.GroupsInfo;
 import ru.makar.icss.lab3.parser.XmlParser;
 import ru.makar.icss.lab3.parser.impl.DataProcessor;
 import ru.makar.icss.lab3.parser.impl.XmlValidator;
+import ru.makar.icss.lab3.parser.impl.dom.DOMParser;
+import ru.makar.icss.lab3.parser.impl.sax.SAXParser;
 import ru.makar.icss.lab3.parser.impl.stax.StAXParser;
 import ru.makar.icss.lab3.report.ReportGenerator;
 
@@ -25,7 +29,9 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import static ru.makar.icss.lab3.Constants.*;
@@ -44,32 +50,42 @@ public class MainController implements Initializable {
     @FXML
     private Button resetButton;
 
+    @FXML
+    private ToggleGroup parserOptions;
+
     private DirectoryChooser directoryChooser;
     private XmlValidator xmlValidator;
+    private Map<String, XmlParser> parsersMap;
     private XmlParser xmlParser;
     private DataProcessor dataProcessor;
     private ReportGenerator reportGenerator;
-    private BooleanProperty stateClear;
+    private BooleanProperty stateProperty;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         directoryChooser = new DirectoryChooser();
         directoryChooser.setTitle("Сохранить отчет");
         xmlValidator = new XmlValidator();
-        xmlParser = new StAXParser();
+
+        parsersMap = new HashMap<>();
+        parsersMap.put("SAX", new SAXParser());
+        parsersMap.put("DOM", new DOMParser());
+        parsersMap.put("StAX", new StAXParser());
+        xmlParser = parsersMap.get("SAX");
+
         dataProcessor = new DataProcessor();
         reportGenerator = new ReportGenerator();
         dropPaneLabel.setText(MESSAGE_DROP);
-        stateClear = new SimpleBooleanProperty();
-        stateClear.set(true);
-        resetButton.visibleProperty().bind(stateClear.not());
+        stateProperty = new SimpleBooleanProperty();
+        stateProperty.set(true);
+        resetButton.visibleProperty().bind(stateProperty.not());
     }
 
     @FXML
     private void onDragOver(DragEvent event) {
         dropPane.getStyleClass().add("active");
         dropPaneLabel.getStyleClass().add("active");
-        if (stateClear.get()) {
+        if (stateProperty.get()) {
             dropPaneLabel.setText(MESSAGE_RELEASE);
         }
         event.acceptTransferModes(TransferMode.MOVE);
@@ -77,7 +93,7 @@ public class MainController implements Initializable {
 
     @FXML
     private void onDragExited() {
-        if (stateClear.get()) {
+        if (stateProperty.get()) {
             dropPaneLabel.setText(MESSAGE_DROP);
         }
         dropPane.getStyleClass().removeAll("active");
@@ -86,10 +102,10 @@ public class MainController implements Initializable {
 
     @FXML
     private void onDrop(DragEvent event) {
-        if (!stateClear.get()) {
+        if (!stateProperty.get()) {
             return;
         }
-        stateClear.set(false);
+        stateProperty.set(false);
         dropPaneLabel.setText(MESSAGE_REPORT_GENERATE);
         Dragboard dragboard = event.getDragboard();
         List<File> files = dragboard.getFiles();
@@ -120,10 +136,16 @@ public class MainController implements Initializable {
     }
 
     @FXML
-    public void reset() {
-        stateClear.set(true);
+    private void reset() {
+        stateProperty.set(true);
         dropPane.getStyleClass().removeAll("generate-complete", "generate-error");
         onDragExited();
+    }
+
+    @FXML
+    private void onParserChange() {
+        String text = ((RadioButton) parserOptions.getSelectedToggle()).getText();
+        xmlParser = parsersMap.get(text);
     }
 
     private File getXSDSchema(List<File> files) {
