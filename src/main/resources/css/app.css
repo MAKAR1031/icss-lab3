@@ -1,6 +1,6 @@
 .drop-pane {
     -fx-border-width: 3px;
-    -fx-border-color: lightgray;
+    -fx-border-color: #a7a7a7;
     -fx-border-style: dashed;
 }
 
@@ -9,7 +9,7 @@
 }
 
 .drop-pane-text {
-    -fx-text-fill: lightgrey;
+    -fx-text-fill: #a7a7a7;
 }
 
 .drop-pane-text.active {
