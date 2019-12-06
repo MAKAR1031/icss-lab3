@@ -9,7 +9,7 @@ import ru.makar.icss.lab3.model.GroupsInfo;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -18,13 +18,14 @@ import static ru.makar.icss.lab3.Constants.PATH_REPORT_TEMPLATE;
 public class ReportGenerator {
     private String targetName;
     private GroupsInfo groupsInfo;
+    private long totalTime;
     private JtwigTemplate template;
 
     public ReportGenerator() {
         EnvironmentConfiguration configuration = EnvironmentConfigurationBuilder
                 .configuration()
                 .resources()
-                .withDefaultInputCharset(Charset.forName("UTF-8"))
+                .withDefaultInputCharset(StandardCharsets.UTF_8)
                 .and()
                 .build();
         template = JtwigTemplate.classpathTemplate(PATH_REPORT_TEMPLATE, configuration);
@@ -36,6 +37,10 @@ public class ReportGenerator {
 
     public void setGroupsInfo(GroupsInfo groupsInfo) {
         this.groupsInfo = groupsInfo;
+    }
+
+    public void setTotalTime(long totalTime) {
+        this.totalTime = totalTime;
     }
 
     public File generate(File destinationPath) {
@@ -63,7 +68,8 @@ public class ReportGenerator {
     private String generateReportContent() {
         JtwigModel model = JtwigModel.newModel()
                 .with("groups", groupsInfo.getGroups())
-                .with("students", groupsInfo.getStudents());
+                .with("students", groupsInfo.getStudents())
+                .with("totalTime", totalTime);
         return template.render(model);
     }
 }

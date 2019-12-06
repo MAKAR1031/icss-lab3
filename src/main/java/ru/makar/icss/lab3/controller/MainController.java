@@ -145,8 +145,7 @@ public class MainController implements Initializable {
 
     @FXML
     private void onParserChange() {
-        String text = ((RadioButton) parserOptions.getSelectedToggle()).getText();
-        xmlParser = parsersMap.get(text);
+        xmlParser = parsersMap.get(parserName());
     }
 
     private File getXSDSchema(List<File> files) {
@@ -161,22 +160,30 @@ public class MainController implements Initializable {
         return files.stream().filter(f -> f.getName().endsWith(".xml")).findAny().orElse(null);
     }
 
+    private String parserName() {
+        return ((RadioButton) parserOptions.getSelectedToggle()).getText();
+    }
+
     private boolean parseAndGenerateReport(File xsd, File xml) {
         String validState = xmlValidator.validate(xsd, xml);
         if (!"ok".equals(validState)) {
             dropPaneLabel.setText(MESSAGE_XML_INVALID + validState);
             return false;
         }
+        long start = System.nanoTime();
         GroupsInfo info = xmlParser.parse(xml);
+        long total = System.nanoTime() - start;
         if (info != null) {
             dataProcessor.process(info);
         } else {
             dropPaneLabel.setText(MESSAGE_ERROR);
             return false;
         }
-        String targetName = xml.getName().replaceAll("\\.xml", "") + "-report.html";
+        String nameWithoutExtension = xml.getName().replaceAll("\\.xml", "");
+        String targetName = String.format("%s-%s-report.html", nameWithoutExtension, parserName());
         reportGenerator.setTargetName(targetName);
         reportGenerator.setGroupsInfo(info);
+        reportGenerator.setTotalTime(total);
         File destination = directoryChooser.showDialog(rootPane.getScene().getWindow());
         File report = reportGenerator.generate(destination);
         if (report != null) {
